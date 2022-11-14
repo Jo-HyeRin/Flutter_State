@@ -25,6 +25,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  int num = 1;
+
+  void increase(){
+    setState(() {
+      num++;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
@@ -33,17 +42,18 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(child: AComponent()),
-          Expanded(child: BComponent()),
+          Expanded(child: AComponent(num)),
+          Expanded(child: BComponent(increase)),
         ],
       ),
     );
   }
 }
 
-// A 컴포넌트 생성
+// 컨슈머 (데이터 소비자)
 class AComponent extends StatelessWidget {
-  const AComponent({Key? key}) : super(key: key);
+  final int num;
+  const AComponent(this.num, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,16 +62,17 @@ class AComponent extends StatelessWidget {
       child: Column(
         children: [
           Text("AComponent"),
-          Expanded(child: Align(child: Text("1", style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)))),
+          Expanded(child: Align(child: Text("${num}", style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)))),
         ],
       ),
     );
   }
 }
 
-// B 컴포넌트 생성
+// 서플라이어 (데이터 공급자)
 class BComponent extends StatelessWidget {
-  const BComponent({Key? key}) : super(key: key);
+  final Function increase;
+  const BComponent(this.increase, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +84,9 @@ class BComponent extends StatelessWidget {
           Expanded(
             child: Align(
               child: ElevatedButton(
-                onPressed: (){},
+                onPressed: (){
+                  increase();
+                },
                 child: Text("숫자증가", style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)),
               ),
             ),
