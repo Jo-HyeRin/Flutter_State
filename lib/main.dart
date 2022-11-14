@@ -46,6 +46,7 @@ class AComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.yellow,
+      child: Text("AComponent"),
     );
   }
 }
@@ -56,8 +57,12 @@ class BComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
+    return SizedBox(
+      width: double.infinity,
+      child: Container(
+        color: Colors.blue,
+        child: Text("BComponent"),
+      ),
     );
   }
 }
