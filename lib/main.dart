@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Provider -> 공급자(창고x)
 // Provider는 창고(Repository)에 데이터를 공급
-final numProvider = Provider((_) => 1);
+// final numProvider = Provider((_) => 1);
+final numProvider = StateProvider((_) => 1);
+// numProvider가 final인 이유 : numProvider는 StateProvider의 주소값을 가지고 있는 거라
+//
 
 void main() {
   runApp(
@@ -52,12 +55,11 @@ class AComponent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    // 소비를 한 번만 할 때 read를 사용. rebuild 안 됨.
-    int num = ref.read(numProvider);
+    // 소비를 한 번만 할 때 read를 사용. rebuild 안 됨
+    // int num = ref.read(numProvider);
 
-    // watch는 numProvider의 값이 변경될 때마다 rebuild 됨
-    // while 돌면서 리스너 역할 하고 있다.
-    // 여기서는 화면이 바뀌지 않으니 watch를 사용하면 낭비다.
+    // ﻿watch는 numProvider의 값이 변경될 때마다 rebuild 됨
+    int num = ref.watch(numProvider);
 
     return Container(
       color: Colors.yellow,
@@ -79,11 +81,11 @@ class AComponent extends ConsumerWidget {
 }
 
 // 서플라이어 공급자
-class BComponent extends StatelessWidget {
+class BComponent extends ConsumerWidget {
   const BComponent({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: Colors.blue,
       child: Column(
@@ -92,7 +94,10 @@ class BComponent extends StatelessWidget {
           Expanded(
             child: Align(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  final result = ref.read(numProvider.notifier);
+                  result.state = result.state+5;
+                },
                 child: Text(
                   "숫자증가",
                   style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
