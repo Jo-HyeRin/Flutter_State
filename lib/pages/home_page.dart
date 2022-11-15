@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_state/pages/counter_provider.dart';
+import 'package:flutter_state/pages/product_list_repository.dart';
 import 'package:flutter_state/pages/product_repository.dart';
 
 class HomePage extends ConsumerWidget {
@@ -10,10 +11,21 @@ class HomePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final count = ref.watch(counterProvider);
     final product = ref.watch(productProvider);
+    final productList = ref.watch(productListProvider);
 
     return Scaffold(
       body: Column(
         children: [
+          Expanded( // ListView는 기본 높이가 없어서 자리를 잡아주기 위해 Expanded 적용
+            child: ListView.builder(
+              itemCount: productList.length, // List 데이터 길이
+              itemBuilder: (context, index) {
+              return ListTile(
+                title: Text("${productList[index].name}"),
+                subtitle: Text("${productList[index].price}"),
+              );
+            },),
+          ),
           Text(
             "${count}",
             style: TextStyle(fontSize: 50, fontWeight: FontWeight.w600),
