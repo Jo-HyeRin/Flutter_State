@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_state/pages/counter_provider.dart';
+import 'package:flutter_state/pages/product.dart';
 import 'package:flutter_state/pages/product_list_repository.dart';
 import 'package:flutter_state/pages/product_repository.dart';
 
@@ -26,6 +27,15 @@ class HomePage extends ConsumerWidget {
               );
             },),
           ),
+          ElevatedButton(
+              onPressed: () {
+                final p1 = ref.read(productListProvider.notifier);
+                p1.state = [...p1.state, Product(4, "고구마", 5000)];
+              },
+              child: Text(
+                "상품추가",
+                style: TextStyle(fontSize: 50, fontWeight: FontWeight.w600),
+              )),
           Text(
             "${count}",
             style: TextStyle(fontSize: 50, fontWeight: FontWeight.w600),

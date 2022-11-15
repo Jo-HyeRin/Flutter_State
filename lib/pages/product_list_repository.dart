@@ -1,13 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-// Entity
-class Product {
-  int id;
-  String name;
-  int price;
-
-  Product(this.id, this.name, this.price);
-}
+import 'package:flutter_state/pages/product.dart';
 
 // Provider
 final productListProvider = StateNotifierProvider<ProductListRepository, List<Product>>((ref) {
