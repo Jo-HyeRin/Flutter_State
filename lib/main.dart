@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Provider -> 공급자(창고x)
-// Provider는 창고(Repository)에 데이터를 공급
-// final numProvider = Provider((_) => 1);
-final numProvider = StateProvider((_) => 1);
-// numProvider가 final인 이유 : numProvider는 StateProvider의 주소값을 가지고 있는 거라
-//
+final counterProvider = StateNotifierProvider<Counter, int>((ref) {
+  return Counter();
+});
+
+class Counter extends StateNotifier<int> {
+  Counter() : super(0);
+  void increment() => state++;
+}
 
 void main() {
   runApp(
@@ -25,41 +27,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomePage(),
+      debugShowCheckedModeBanner: false,
+      home: AComponent(),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: AComponent()),
-          Expanded(child: BComponent()),
-        ],
-      ),
-    );
-  }
-}
-
-// AComponnent : 소비자 : 소비자는 공급자(Provider에게 데이터를 요청한다)
-// 공급자는 창고에서 데이터를 꺼내서 돌려준다.
 class AComponent extends ConsumerWidget {
   const AComponent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    // 소비를 한 번만 할 때 read를 사용. rebuild 안 됨
-    // int num = ref.read(numProvider);
-
-    // ﻿watch는 numProvider의 값이 변경될 때마다 rebuild 됨
-    int num = ref.watch(numProvider);
+    final count = ref.watch(counterProvider);
 
     return Container(
       color: Colors.yellow,
@@ -69,41 +49,18 @@ class AComponent extends ConsumerWidget {
           Expanded(
             child: Align(
               child: Text(
-                "${num}",
+                "${count}",
                 style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
               ),
             ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-// 서플라이어 공급자
-class BComponent extends ConsumerWidget {
-  const BComponent({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      color: Colors.blue,
-      child: Column(
-        children: [
-          Text("BCompoent"),
-          Expanded(
-            child: Align(
-              child: ElevatedButton(
-                onPressed: () {
-                  final result = ref.read(numProvider.notifier);
-                  result.state = result.state+5;
-                },
-                child: Text(
-                  "숫자증가",
-                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
+          ),
+          ElevatedButton(
+              onPressed: (){
+                final repo = ref.read(counterProvider.notifier);
+                repo.increment();
+                // ref.read(counterProvider.notifier).increment(); 로 해도 됨.
+              },
+              child: Text("증가"),
           ),
         ],
       ),
